@@ -1,0 +1,51 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>面试通知</title><style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"PingFang SC","Microsoft YaHei",-apple-system,sans-serif;background:#f2f4f7;color:#1c2430;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px 16px}
+.c{background:#fff;border-radius:16px;max-width:420px;width:100%;overflow:hidden;box-shadow:0 8px 32px rgba(20,30,50,.1)}
+.h{background:linear-gradient(135deg,#2f6bff,#6f4bff);color:#fff;padding:24px 22px}
+.h .t{font-size:12.5px;opacity:.85;letter-spacing:1px}
+.h .n{font-size:23px;font-weight:700;margin-top:6px}
+.b{padding:16px 22px 4px}
+.r{display:flex;padding:13px 0;border-bottom:1px solid #eef0f4;gap:14px;align-items:flex-start}
+.r .k{color:#8b95a5;font-size:13.5px;flex:none;width:60px}
+.r .v{flex:1;font-size:15px;font-weight:500;text-align:right;word-break:break-word}
+.r.big .v{font-size:18px;font-weight:700;color:#2f6bff}
+.m{padding:16px 22px;background:#f8f9fb;border-top:1px solid #eef0f4}
+button{width:100%;padding:13px;border:0;border-radius:10px;background:#0e9d6e;color:#fff;font-size:15px;font-weight:600;font-family:inherit;cursor:pointer}
+button:active{filter:brightness(.93)}
+.f{padding:14px 22px 20px;font-size:11.5px;color:#a0a8b4;line-height:1.7;text-align:center}
+.e{padding:52px 22px;text-align:center;color:#8b95a5}
+.e .i{font-size:38px;margin-bottom:12px;opacity:.5}
+</style></head><body><div class="c" id="app"></div>
+<script>
+const D=[{"c":"xwv8u7","n":"孙家伟","ph":"18717870629","msg":"【创协】您好，孙家伟！您申请面试创协人事部的面试已安排在2026.10.09，面试地点：大活105。请提前10分钟到场，联系人：孙家伟187。祝好！","t":"2026.10.09","j":"人事部","co":"创协","a":"大活105","ct":"孙家伟187"},{"c":"fsw3gk","n":"张佳傲雪","ph":"15389916089","msg":"【创协】您好，张佳傲雪！您申请面试创协竞赛部的面试已安排在2026.10.09，面试地点：大活105。请提前10分钟到场，联系人：孙家伟187。祝好！","t":"2026.10.09","j":"竞赛部","co":"创协","a":"大活105","ct":"孙家伟187"},{"c":"wsk2rw","n":"邵一平","ph":"18887445777","msg":"【创协】您好，邵一平！您申请面试创协科创部的面试已安排在2026.10.09，面试地点：大活105。请提前10分钟到场，联系人：孙家伟187。祝好！","t":"2026.10.09","j":"科创部","co":"创协","a":"大活105","ct":"孙家伟187"}];
+function getK(){
+  var s=location.search||'', h=location.hash||'', v='';
+  var m=s.match(/[?&]k=([^&#/]+)/); if(m) v=m[1];
+  if(!v){var m2=h.match(/[#?&]k=([^&#/]+)/); if(m2) v=m2[1];}
+  if(!v){var m3=h.replace(/^#[/]?[?]?k=/,''); if(m3&&m3.length) v=m3;}
+  try{v=decodeURIComponent(v)}catch(e){}
+  v=(v||'').split('&')[0].split('#')[0];
+  return v.replace(/[^0-9a-zA-Z]/g,'');
+}
+var k=getK();
+var i=D.find(function(x){return x.c===k;});
+const A=document.getElementById('app');
+function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(m){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]})}
+if(!i){A.className='c e';A.innerHTML='<div class="i">🔍</div><div style="font-size:15px;font-weight:600;color:#5b6675">链接无效</div><div style="font-size:13px;margin-top:6px;line-height:1.7">请确认短信是否完整复制<br>如仍无效请联系招聘方重新发送</div><div style="font-size:11px;color:#c2c8d0;margin-top:12px">识别到的编号：'+(k||'无')+'</div>'}
+else{
+  const rows=[];
+  if(i.t)rows.push(['时间',i.t,1]);
+  if(i.j)rows.push(['岗位',i.j,0]);
+  if(i.co)rows.push(['公司',i.co,0]);
+  if(i.a)rows.push(['地点',i.a,0]);
+  if(i.ct)rows.push(['联系人',i.ct,0]);
+  A.className='c';
+  A.innerHTML='<div class="h"><div class="t">面试通知</div><div class="n">'+esc(i.n)+' 你好</div></div><div class="b">'
+   +rows.map(function(r){return '<div class="r'+(r[2]?' big':'')+'"><div class="k">'+r[0]+'</div><div class="v">'+esc(r[1])+'</div></div>'}).join('')
+   +'</div><div class="m"><button id="cf">确认参加</button></div><div class="f">本页面由招聘方生成，信息仅用于本次面试通知</div>';
+  document.getElementById('cf').onclick=function(){this.textContent='已确认，请等待后续通知';this.style.background='#0f6e56'};
+}
+</script></body></html>
