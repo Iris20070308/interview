@@ -20,7 +20,9 @@ button:active{filter:brightness(.93)}
 .e .i{font-size:38px;margin-bottom:12px;opacity:.5}
 </style></head><body><div class="c" id="app"></div>
 <script>
-const D=[{"c":"9mb7em","n":"孙家伟","ph":"18717870629","msg":"【创协】您好，孙家伟！您申请面试创协人事部的面试已安排在2026.10.09，大活105。请提前10分钟到场，联系人：孙家伟187。祝好！","t":"2026.10.09","j":"人事部","co":"创协","a":"大活105","ct":"孙家伟187"},{"c":"64gwvc","n":"张佳傲雪","ph":"15389916089","msg":"【创协】您好，张佳傲雪！您申请面试创协竞赛部的面试已安排在2026.10.09，大活105。请提前10分钟到场，联系人：孙家伟187。祝好！","t":"2026.10.09","j":"竞赛部","co":"创协","a":"大活105","ct":"孙家伟187"},{"c":"thu9yn","n":"邵一平","ph":"18887445777","msg":"【创协】您好，邵一平！您申请面试创协科创部的面试已安排在2026.10.09，大活105。请提前10分钟到场，联系人：孙家伟187。祝好！","t":"2026.10.09","j":"科创部","co":"创协","a":"大活105","ct":"孙家伟187"}];
+var CFG={"endpoint":"https://interview-notice.app.workbuddy.host","publishableKey":"wbpk_Tbe5oLCKcnb11eYEReOd1S_8N3IO2MZ1WcGh3M9cE47796ps4R00kyD"};
+var SDK_URL='https://cdn.jsdelivr.net/npm/@tencent-ai/workbuddy-cloud-sdk@dev/lib/index.global.js';
+const D=[{"c":"nunh8w","n":"孙家伟","ph":"18717870629","msg":"【创协】您好，孙家伟！您申请面试创协人事部的面试已安排在2026.10.09，大活105。请提前10分钟到场，联系人：孙家伟187。祝好！","t":"2026.10.09","j":"人事部","co":"创协","a":"大活105","ct":"孙家伟187"},{"c":"u4uezd","n":"张佳傲雪","ph":"15389916089","msg":"【创协】您好，张佳傲雪！您申请面试创协竞赛部的面试已安排在2026.10.09，大活105。请提前10分钟到场，联系人：孙家伟187。祝好！","t":"2026.10.09","j":"竞赛部","co":"创协","a":"大活105","ct":"孙家伟187"},{"c":"sus3pa","n":"邵一平","ph":"18887445777","msg":"【创协】您好，邵一平！您申请面试创协科创部的面试已安排在2026.10.09，大活105。请提前10分钟到场，联系人：孙家伟187。祝好！","t":"2026.10.09","j":"科创部","co":"创协","a":"大活105","ct":"孙家伟187"}];
 function getK(){
   var s=location.search||'', h=location.hash||'', v='';
   var m=s.match(/[?&]k=([^&#/]+)/); if(m) v=m[1];
@@ -45,7 +47,60 @@ else{
   A.className='c';
   A.innerHTML='<div class="h"><div class="t">面试通知</div><div class="n">'+esc(i.n)+' 你好</div></div><div class="b">'
    +rows.map(function(r){return '<div class="r'+(r[2]?' big':'')+'"><div class="k">'+r[0]+'</div><div class="v">'+esc(r[1])+'</div></div>'}).join('')
-   +'</div><div class="m"><button id="cf">确认参加</button></div><div class="f">本页面由招聘方生成，信息仅用于本次面试通知</div>';
-  document.getElementById('cf').onclick=function(){this.textContent='已确认，请等待后续通知';this.style.background='#0f6e56'};
+   +'<div class="r" style="border-top:1px dashed #eef0f4;margin-top:6px;padding-top:15px"><div class="k">通知</div><div class="v" style="font-weight:400;font-size:13px;color:#5b6675;text-align:left;line-height:1.7">'+esc(i.msg).replace(/\n/g,'<br>')+'</div></div></div>'
+   +'<div class="m"><button id="cf">确认参加</button><div id="cfTip" style="font-size:12px;color:#8b95a5;text-align:center;margin-top:10px;display:none"></div></div>'
+   +'<div class="f">本页面由招聘方生成，信息仅用于本次面试通知</div>';
+
+  var db=null, ready=false;
+  function initSdk(){
+    if(!window.WorkBuddyCloud)return false;
+    try{db=WorkBuddyCloud.createWorkBuddyCloud({endpoint:CFG.endpoint,publishableKey:CFG.publishableKey});ready=true}catch(e){ready=false}
+    return ready;
+  }
+  if(!initSdk()){
+    var s=document.createElement('script');
+    s.src=SDK_URL;
+    s.onload=function(){initSdk();loadState()};
+    s.onerror=function(){tipShow&&tipShow('网络异常，确认功能不可用','#d98207')};
+    document.head.appendChild(s);
+  }
+
+  var bt=document.getElementById('cf'), tip=document.getElementById('cfTip');
+  function tipShow(t,c){tip.style.display='block';tip.style.color=c||'#8b95a5';tip.textContent=t}
+  function markDone(){bt.textContent='✓ 已确认，请等待后续通知';bt.style.background='#0f6e56';bt.disabled=true}
+
+  function loadState(){
+    if(!ready)return;
+    db.database.from('confirmations').select('confirmed').eq('code',i.c).maybeSingle()
+      .then(function(r){
+        if(!r.error&&r.data&&r.data.confirmed){
+          bt.textContent='✓ 你已确认参加';bt.style.background='#0f6e56';bt.disabled=true;
+        }
+      }).catch(function(){});
+  }
+  if(ready)loadState();
+
+  bt.onclick=function(){
+    if(this.disabled)return;
+    bt.disabled=true;bt.textContent='提交中…';
+    var done=markDone;
+    if(!ready){try{initSdk()}catch(e){}
+      if(!ready){
+        this.disabled=false;this.textContent='确认参加';
+        tipShow('网络异常，请稍后重试','#d63b3b');
+        return;
+      }
+    }
+    db.database.from('confirmations')
+      .upsert({code:i.c,name:i.n,phone:i.ph,batch:i.b||'',confirmed:true,confirmed_at:new Date().toISOString()},
+              {onConflict:'code'})
+      .then(function(r){
+        if(r.error)throw r.error;
+        done();
+      }).catch(function(e){
+        bt.disabled=false;bt.textContent='确认参加';
+        tipShow('提交失败，请检查网络后重试','#d63b3b');
+      });
+  };
 }
 </script></body></html>
